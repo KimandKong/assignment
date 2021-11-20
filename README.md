@@ -193,13 +193,68 @@ _(실습 예제2)_
 
 * 쉘 자체 변수를 현재와 인수 위치, OPTIND 및 OPTARG의 위치를 추적하기 위해 사용하고, 쉘 변수에서 옵션 이름을 반환할수 있습니다.
 
-* 
+* getopts 명령은 짧은 옵션을 처리합니다. 
 
-\
-\
-\
-\
-\
+**사용법**
+
+![image](https://user-images.githubusercontent.com/93643813/142733964-9296d0b8-db84-43a6-a735-e49a598ef79d.png)
+
+ OptionString의 문자 뒤에는 :(콜론)이 오면 옵션에 인수가 있는 것으로 간주됩니다. 옵션에 옵션-인수가 필요한 경우 getopts 명령은 이를 변수 OPTARG에 배치합니다. 또, 사용하고 하는 옵션은 인수들을 $1, $2, ... positional parameters 형태로 전달되므로 스크립트 내에서 직접 옵션을 해석해서 사용해야 됩니다. 이것도 getopt와 마찬가지로 case문으로 사용하는것이 일반적 입니다. 또 사용할때 이 명령어는 짧은 옵션이라는 것을 인지해야 됩니다.
+ 
+ 쉽게 말해서, __(getopts "a :b :c" opt)__ 와 같은 형식으로 쓰면되는것이다. 여기서 :는 옵션 인수가 있다는 뜻이다.
+ 
+ **예제**
+ 
+ getopts 명령문은 case 문에서 사용하였습니다. nano test4.sh 로 하였습니다
+ 
+ ```bash
+ #!/bin/bash
+
+while getopts "a:b:c" opt; do
+  case $opt in
+    a)
+      echo >&2 "-a 동작!, OPTARG: $OPTARG"
+      ;;
+    b)
+      echo >&2 "-b 동작!, OpOPTARG: $OPTARG"
+      ;;
+    c)
+      echo >&2 "-c 동작!"
+      ;;
+  esac
+done
+
+shift $(( OPTIND - 1 ))
+echo ------------------
+echo "$@"
+
+```
+
+```
+========= 설정옵션과 옵션 인수가 일치할경우========
+$./test4.sh -a hellow -b /user/student c hello world
+-a 동작!, OPTARG: hellow
+-b 동작!, OpOPTARG: /user/student
+------------------
+c hello world
+
+
+
+======== 설정하지 않은 옵션이 사용되었을때 ========
+$./test4.sh -g d
+./test4.sh: illegal option -- g
+------------------
+d
+
+
+```
+
+_(실습 예제3)_
+![image](https://user-images.githubusercontent.com/93643813/142736981-c456d233-a5ec-42a6-a71b-f1a0f529614c.png)
+
+ 결과 값에서 알수 있듯이 getopt와 getopts의 공통점은 설정옵션과 옵션 인수가 일치 해야지 가능하다는 것이다. 그리고 이 getopts는 getopt 와 다르게 조금더 깔금하게 동작이 되는것을 볼수가 있다. 그래서 간단하게 사용되어질때 좋은 명령어이다.
+ 
+ 
 
 ### sed 명령어
 
