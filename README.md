@@ -8,6 +8,7 @@
 2. [getopts 명령어](#getopts-명령어)
 4. [sed 명령어](#sed-명령어)
 5. [awk 명령어](#awk-명령어)
+6. [Reference](#Reference)
 - - -
 ### getopt 명령어
 
@@ -331,7 +332,7 @@ _(특징을 그림으로 정리)_
 
  **예제**
  
- 예제에 앞서 awk를 위한 txt를 만들었다.
+ 예제에 앞서 awk를 위한 txt를 만들.
  
 ```text
 name    phone           birth           sex     score
@@ -373,7 +374,7 @@ nam     010-4321-7890   1996-06-20      M       75
 ![image](https://user-images.githubusercontent.com/93643813/142750999-a4651469-15ef-41f7-8de3-731a972fe40c.png)
 
 
-위와 같이 cat과 awk '{ print }'은 유사한 특징을 가지고 있.
+위와 같이 cat과 awk '{ print }'은 유사한 특징을 가지고 있습니다.
 
 2. 필드 값 출력
 ###### 필드 값 출력
@@ -750,3 +751,8 @@ $ awk '{max = 0; for (i=3; i<NF; i++) max = ($i > max) ? $i : max ; print max}' 
 ![image](https://user-images.githubusercontent.com/93643813/142753206-93858034-f81b-4a7f-831b-759a934392f0.png)
 
  이것도 마찬가지로 언어의 특징을 가지고 실행이 되는것을 알수가 있습니다.
+
+---
+
+### Reference
+
