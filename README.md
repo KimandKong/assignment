@@ -1046,3 +1046,9 @@ $ awk '{max = 0; for (i=3; i<NF; i++) max = ($i > max) ? $i : max ; print max}' 
 
 ### Reference
 
+* [getopts,getop 관련자료](https://mug896.github.io/bash-shell/getopts.html "getop,getops 관련자료")
+* [getopts 관련자료](https://www.ibm.com/docs/ko/aix/7.2?topic=g-getopts-command "getops 관련자료")
+* [getop 관련자료](https://www.ibm.com/docs/ko/aix/7.2?topic=g-getopt-command"getop "getop 관련자료")
+* [sed 관련 자료](https://reakwon.tistory.com/164 "sed 관련 자료")
+* [sed 관련 자료2](https://www.ibm.com/docs/ko/aix/7.2?topic=s-sed-command"sed 관련 자료2")
+* [awk 관련 자료](https://recipes4dev.tistory.com/171"awk관련자료")
