@@ -285,11 +285,279 @@ _(실습 예제3)_
 
 **사용법**
 
+기본적인 형태 : __sed -n -e 'command' [input file]__
+
+* ___-n___ : 여기서 -n를 사용하는 이유가 눈에 안보이는 데이터들이 많이 나타나기 때문입니다.그래서 -n을 사용해서 -n옵션을 붙여 패턴 버퍼의 자동출력을 하지 않게 해서 지저분하지 않고 깔금하게 출력 시킬수 있습니다.
+
+*  ___-e___ : 이 옵션 다음으로는 우리가 사용할 command를 가지고 텍스트 파일을 가공해줍니다.
+
+sed -n -e '1,$p' sed_test_file.txt
+
+| 이름 | 특징 |방벙예제
+|:---|:---|---:|
+| - p  | 특정 행을 출력| sed -n -e '1,$p' sed_test_file.txt
+| - d | 특정 행 삭제 | sed -n -e '2,6d' -e '1,$p'  sed_test_file.txt
+| - s |단어 치환 | sed -n -e 's/reakwon/reak/g' -e '2p' sed_test_file.txt
+|- a, i|문자열 추가|sed -n -e '/go/a\end' -e '1,$p' let_it_go.txt
+| - c |특정 행의 내용을 전부 교체| sed -n -e '/^Let/c\Let it go X2' -e '1,$p' let_it_go.txt
+| - r |특정 행에 파일의 내용을 추가|  sed -n -e '/100$/r perfect.txt' -e '1,$p' sed_test_file.txt
 
 
  **예제**
+ 
+ 먼저 sed_test_file.txt 에 값을 넣어서 실행을 하였습니다.
+ 
+ ```text
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+yut     010-2323-2323   1988-10-10      F       59
+kim     010-1234-4321   1977-07-17      M       69
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+ 
+ 
+ ```
+ 
+1. __특정 행을 출력__
+ 
+ ```
+ $ sed -n -e '/$/p' sed_test_file.txt
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+yut     010-2323-2323   1988-10-10      F       59
+kim     010-1234-4321   1977-07-17      M       69
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+ 
+=====================================================
+ 
+ $  sed -n -e '1p' ./sed_test_file.txt
+name    phone           birth           sex     score
+kim@DESKTOP-8BRLTAA:/mnt/c/Users/user/wak$ sed -n -e '2p' sed_test_file.txt
+
+=====================================================
+
+$ sed -n -e '1,5p' sed_test_file.txt
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+
+====================================================
+
+$ sed -n -e '1p' -e '8,$p'  sed_test_file.txt
+name    phone           birth           sex     score
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+====================================================
+
+$ sed -n -e '/F/p'  sed_test_file.txt
+sim     010-4321-4321   1999-09-09      F       88
+yut     010-2323-2323   1988-10-10      F       59
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+
+```
+
+![image](https://user-images.githubusercontent.com/93643813/142755869-605ce257-9082-45c0-8b58-55149410ba63.png)
+
+* 기본적으로 전체의 줄을 출력하려면 command에 __/$/p__ 또는 __1,$p__ 로 출력해볼 수 있습니다.  
+* 첫번째 줄만 출력해주기를 원하면  2번째 처럼 __'1p'__ 로 사용할 수 있습니다. 만약에 1~5까지의 값을 출력하고 싶으면 __'1,5p'__ 로 하면 됩니다.(1부터 5까지라는 말입니다.) 
+* n~끝까지를 하고 싶으면 __'n,$p'__ 라고 적어주면 됩니다.
+* 다중 command 사용을 하고 싶으면, -e 옵션을 이용해서 여러개 사용하여 command를 줄 수 있습니다.
+* 특정 문자열에 있는 것만 표시하고 싶으면, __/포함된 문자열/p__ 이런 식으로 사용 할수 있습니다.
+
+2. __특정 행 삭제__
+```
+$ cat sed_test_file.txt
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+yut     010-2323-2323   1988-10-10      F       59
+kim     010-1234-4321   1977-07-17      M       69
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+
+====================================================
+$ sed -n -e '2,6d' -e '1,$p'  sed_test_file.txt
+name    phone           birth           sex     score
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+
+
+```
+
+![image](https://user-images.githubusercontent.com/93643813/142756902-060be76b-e12a-436e-a4b7-cd6b4d29519d.png)
+
+
+ 2-1. 2~6번째 줄을 삭제하고 나머지 모든 내용을 출력하는 내용을 예제로 썼습니다. __p를 넣는 부분에 d를__ 넣어주면 됩니다. 
+
+3. __단어 치환__
+
+```
+$ cat sed_test_file.txt
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+yut     010-2323-2323   1988-10-10      F       59
+kim     010-1234-4321   1977-07-17      M       69
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+
+====================================================
+$ sed -n -e 's/reakwon/reak/g' -e '2p' sed_test_file.txt
+reak 010-1234-1234   1981-01-01      M       100
+
+```
+
+![image](https://user-images.githubusercontent.com/93643813/142756876-dd888072-a347-4892-8259-f76bfa96d2cb.png)
+
+
+ 이것을 쓰는 방법은 __s/reakwon/reak/g__ 부분을 잘 보면 됩니다 . 여기서 s는 substitute의 약자로 치완해 주는 다는 것이고 reakwon 이름을 reak으로 바꾼다는 것입니다. 그리고 마지막 g는 global의 약자로 전체라는 것을 말합니다. __/gi__ 라는 것도 있는데 이것은 ignore case의 약자로 reakwon의 단어를 검색할때 대소문자 구분하지 않겠다는 것을 의미합니다. 그래서 대소문자 구분없이 쓰려면 __gi__ 를 쓰는것이 좋습니다.
+
+
+4. __문자열 추가__
+
+여기서는 let_it_go.txt라는 파일을 만들어 실행하였습니다.
+
+```
+$ cat let_it_go.txt
+Let it go, let it go.
+Can't hold it back anymore.
+Let it go, let it go.
+Turn away and slam the door.
+I don't care what they're going to say.
+Let the storm rage on.
+The cold never bothered me anyway.
+
+====================================================
+$ sed -n -e '/go/a\end' -e '1,$p' let_it_go.txt
+Let it go, let it go.
+end
+Can't hold it back anymore.
+Let it go, let it go.
+end
+Turn away and slam the door.
+I don't care what they're going to say.
+end
+Let the storm rage on.
+The cold never bothered me anyway.
+
+====================================================
+$ sed -n -e '/go/i\end' -e '1,$p' let_it_go.txt
+end
+Let it go, let it go.
+Can't hold it back anymore.
+end
+Let it go, let it go.
+Turn away and slam the door.
+end
+I don't care what they're going to say.
+Let the storm rage on.
+The cold never bothered me anyway.
+
+```
+
+![image](https://user-images.githubusercontent.com/93643813/142756836-288df5db-a5fb-421c-867a-c3aa80943f69.png)
+
+
+ * 여기서 __'/찾을 문자열/a,i\'__  의형태로 쓰여집니다.
+
+1 a : 아래 줄에 추가할 문자열으로 들어 값니다. 그래서 go라는 것을 찾으면  다음 줄에 추가가 됩니다.
+2 i : 위에 삽입할 문자열으로 들어 값니다. 그래서 go라는것을 찾으면 위에 삽입을 합니다.
+
+5. __특정 행의 내용을 전부 교체__
+
+```
+$ cat let_it_go.txt
+Let it go, let it go.
+Can't hold it back anymore.
+Let it go, let it go.
+Turn away and slam the door.
+I don't care what they're going to say.
+Let the storm rage on.
+The cold never bothered me anyway.
+
+====================================================
+$ sed -n -e '/^Let/c\Let it go X2' -e '1,$p' let_it_go.txt
+Let it go X2
+Can't hold it back anymore.
+Let it go X2
+Turn away and slam the door.
+I don't care what they're going to say.
+Let it go X2
+The cold never bothered me anyway.
+
+```
+
+![image](https://user-images.githubusercontent.com/93643813/142756812-cf538a91-11c9-4cbb-a080-b2d3b0c04a45.png)
+
+ 기본적인 형태는 __'/바꿀 행이 포함한 문자열/c\바꿀 행의 내용'__ 로 시작됩니다. 그래서 위와 같이 내가 바꾸고 싶은 것을 ^를 사용하여 Let으로 시작하는 줄들을 찾고 c 커맨드로 바꿔질 줄 내용을 입력하였습니다.
+
+
+6. __특정 행에 파일의 내용을 추가__
+
+ 특정파일을 만들기 위해서 perfect.txt을 만들었습니다.
+
+```
+$ cat sed_test_file.txt
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+yut     010-2323-2323   1988-10-10      F       59
+kim     010-1234-4321   1977-07-17      M       69
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+
+$ cat perfect.txt
+PERFECT! EXCELLENT!
+
+
+====================================================
+
+$  sed -n -e '/100$/r perfect.txt' -e '1,$p' sed_test_file.txt
+name    phone           birth           sex     score
+reakwon 010-1234-1234   1981-01-01      M       100
+PERFECT! EXCELLENT!
+sim     010-4321-4321   1999-09-09      F       88
+nara    010-1010-2020   1993-12-12      M       20
+yut     010-2323-2323   1988-10-10      F       59
+kim     010-1234-4321   1977-07-17      M       69
+nam     010-4321-7890   1996-06-20      M       75
+sol     010-5911-1111   1976-10-12      F       60
+lee     010-4949-4949   1988-09-30      F       80
+feng    010-1111-9999   1979-03-20      M       90
+```
+
+![image](https://user-images.githubusercontent.com/93643813/142756790-0e8c38ab-5251-4f6f-9b7b-b109a851fef0.png)
+
+ 100으로 끝나는 줄에 저 텍스트 파일의 내용을 아랫줄에 첨가하라고 했는 명령어 입니다. 그래서 __'/100$/r perfect.txt'__ 되는 것입니다.
+
 
 - - -
+
+
+
 
 ### awk 명령어
 
